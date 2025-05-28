@@ -35,6 +35,7 @@ public class RedisClient : MonoBehaviour
 
     private float updateDroneTimer = 0f;
     private GameObject latestDroneUpdated;
+    private ConnectionMultiplexer redis; // redis client
 
 
     public WS_Client wsClient;
@@ -45,13 +46,49 @@ public class RedisClient : MonoBehaviour
         latestDroneUpdated = null;
         redisConnected = false;
         sceneName = SceneManager.GetActiveScene().name;
+    }
+
+    private void Update()
+    {
+        if (redis != null && redis.IsConnected && droneReady)
+        {
+            //Change drone Information if we receive drone data from Redis Server
+            changeDroneInformation(); //virtual drone
+            //wsClient.changeDroneInformationTest(); //real drone
+            droneReady = false;
+        }        
+    }
+    
+    public void UpdateRedisConnection(string newAddress)
+    {
+        if (redis != null && redis.IsConnected)
+        {
+            redis.Close();
+        }
+        
+        try 
+        {
+            redis = CreateRedisConnection(newAddress);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Redis connection failed: {e.Message}");
+            // Update UI to show connection failure
+        }
+    
+        // Reinitialize Redis functionality
+        if (redis.IsConnected && (sceneName == "Visualization" || sceneName == "Retrieval"))
+        {
+            getRedisData();
+        }
+        
         if (sceneName == "Visualization" || sceneName == "Retrieval")
         {
             //Visualization or Retrieval Scene
             parentDrone = GameObject.Find("Drones").transform;
             droneReady = false;
 
-            if (redis.IsConnected)
+            if (redis != null && redis.IsConnected)
             {
                 //Get Redis Data if redis is connected
                 redisConnected = true;
@@ -61,7 +98,7 @@ public class RedisClient : MonoBehaviour
         else
         {
             //Home Scene
-            if (redis.IsConnected)
+            if (redis != null && redis.IsConnected)
             {
                 buttonVisualization.enabled = true;
                 buttonRetrieval.enabled = true;
@@ -78,17 +115,6 @@ public class RedisClient : MonoBehaviour
                 redisText.text = "Not Connected to Server";
             }
         }
-    }
-
-    private void Update()
-    {
-        if (droneReady)
-        {
-            //Change drone Information if we receive drone data from Redis Server
-            changeDroneInformation(); //virtual drone
-            //wsClient.changeDroneInformationTest(); //real drone
-            droneReady = false;
-        }        
     }
 
     private void UpdateDroneInformation(GameObject drone)
@@ -235,13 +261,17 @@ public class RedisClient : MonoBehaviour
     }
 
     //connect to Redis client
-    static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(
+    
+    private ConnectionMultiplexer CreateRedisConnection(string address)
+    {
+        return ConnectionMultiplexer.Connect(
             new ConfigurationOptions
             {
-                EndPoints = { "192.168.11.41:6379" },
-                AbortOnConnectFail = false,               
+                EndPoints = { address },
+                AbortOnConnectFail = false,
             });
-    static async Task Main(string[] args)
+    }
+    /*static async Task Main(string[] args)
     {
         //get redis database to get information from Redis Server
         string sceneName = SceneManager.GetActiveScene().name;
@@ -249,5 +279,5 @@ public class RedisClient : MonoBehaviour
         {
             var db = redis.GetDatabase();
         }
-    }
+    }*/
 }
