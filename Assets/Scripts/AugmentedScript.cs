@@ -21,47 +21,99 @@ public class AugmentedScript : MonoBehaviour
     IEnumerator GetCoordinates()
     {
         //while true so this function keeps running once started.
+
+        // check if user has location service enabled
+        /* if (!Input.location.isEnabledByUser) yield break;
+
+         // Start service before querying location
+         Input.location.Start(1f, .1f);
+         Input.compass.enabled = true;
+         Input.gyro.enabled = true;
+
+
+         // Wait until service initializes
+         int maxWait = 20;
+         while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
+         {
+             maxWait--;
+             yield return new WaitForSeconds(1);
+         }
+
+         // Service didn't initialize in 20 seconds
+         if (maxWait < 1)
+         {
+             Debug.Log("Timed out");
+             yield break;
+         }
+
+         // Connection has failed
+         if (Input.location.status == LocationServiceStatus.Failed)
+         {
+             Debug.Log("Unable to determine device location");
+             yield break;
+         }
+
+         ready = true;
+
+         while (true)
+         {
+             //overwrite current lat and lon everytime
+             currentLatitude = Input.location.lastData.latitude;
+             currentLongitude = Input.location.lastData.longitude;
+
+         }
+             //Input.location.Stop();
+             */
+        if (!Input.location.isEnabledByUser)
+        {
+            Debug.Log("Location services disabled by user");
+            yield break;
+        }
+
+        // Start service
+        Input.location.Start(1f, .1f);
+        Input.compass.enabled = true;
+        Input.gyro.enabled = true;
+
+        // Wait for initialization
+        int maxWait = 20;
+        while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
+        {
+            yield return new WaitForSeconds(1);
+            maxWait--;
+        }
+
+        // Handle timeout
+        if (maxWait < 1 || Input.location.status == LocationServiceStatus.Failed)
+        {
+            Debug.LogError("GPS initialization failed");
+            yield break;
+        }
+
+        ready = true;
+
+        // Continuous update loop WITHOUT restarting service
         while (true)
         {
-            // check if user has location service enabled
-            if (!Input.location.isEnabledByUser) yield break;
-
-            // Start service before querying location
-            Input.location.Start(1f, .1f);
-            Input.compass.enabled = true;
-            Input.gyro.enabled = true;
-
-
-            // Wait until service initializes
-            int maxWait = 20;
-            while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
-            {
-                maxWait--;
-                yield return new WaitForSeconds(1);
-            }
-
-            // Service didn't initialize in 20 seconds
-            if (maxWait < 1)
-            {
-                Debug.Log("Timed out");
-                yield break;
-            }
-
-            // Connection has failed
-            if (Input.location.status == LocationServiceStatus.Failed)
-            {
-                Debug.Log("Unable to determine device location");
-                yield break;
-            }
-            else
-            {
-                //overwrite current lat and lon everytime
-                currentLatitude = Input.location.lastData.latitude;
-                currentLongitude = Input.location.lastData.longitude;
-                ready = true;
-            }
-            //Input.location.Stop();
+            UpdateGPSCoordinates();
+            yield return new WaitForSeconds(0.1f);
         }
+
+    }
+
+    void UpdateGPSCoordinates()
+    {
+        if (Input.location.status != LocationServiceStatus.Running) return;
+
+        
+        float newLat = Input.location.lastData.latitude;
+        float newLon = Input.location.lastData.longitude;
+
+        currentLatitude = newLat;
+        currentLongitude = newLon;
+
+        /*currentLatitude = Mathf.Lerp(currentLatitude, newLat, 0.2f);
+        currentLongitude = Mathf.Lerp(currentLongitude, newLon, 0.2f);*/
     }
 
 
