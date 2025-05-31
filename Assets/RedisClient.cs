@@ -37,8 +37,10 @@ public class RedisClient : MonoBehaviour
     private GameObject latestDroneUpdated;
     private ConnectionMultiplexer redis; // redis client
 
-
     public WS_Client wsClient;
+
+    // --- ADDED: Mapping from droneID to drone GameObject ---
+    private Dictionary<string, GameObject> dronesByID = new Dictionary<string, GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -187,36 +189,24 @@ public class RedisClient : MonoBehaviour
         });
     }
 
+    // --- FIXED: One GameObject per droneID ---
     private void changeDroneInformation()
     {
-        //verify if drone exists and attribute drone to redis drone and update drone information
-        virtualDrones = GameObject.FindGameObjectsWithTag("virtualDrone");
-        foreach (GameObject drone in virtualDrones)
+        GameObject drone;
+        if (dronesByID.TryGetValue(droneID, out drone) && drone != null)
         {
-            if (drone.GetComponent<DroneController>().droneName == "")
-            {
-                //if drone exists but information was not attributed, atribute new information to this drone
-                drone.GetComponent<DroneController>().droneName = droneName;
-            }
-            if (drone.GetComponent<DroneController>().droneName == droneName)
-            {
-                //update drone information data
-                attributeInformationToDrone(drone);
-                return;
-            }
+            // Update existing drone's data
+            attributeInformationToDrone(drone);
         }
-
-        //Activate view drone camera
-        if (virtualDrones == null)
+        else
         {
+            // Instantiate a new drone and track it by ID
+            GameObject newDrone = Instantiate(virtualDroneObject, new Vector3(0, 0, 0), Quaternion.identity, parentDrone);
+            newDrone.name = "QuadDrone" + i++; // Or just use droneID as the name
+            attributeInformationToDrone(newDrone);
+            dronesByID[droneID] = newDrone;
             GetComponent<GameManager>().cameraViewEnablee.SetActive(true);
         }
-
-        //create a new drone (if redis drone data was not attributed)
-        GameObject newDrone = Instantiate(virtualDroneObject, new Vector3(0, 0, 0), Quaternion.identity, parentDrone);
-        newDrone.name = "QuadDrone" + i++;
-        attributeInformationToDrone(newDrone);
-        GetComponent<GameManager>().cameraViewEnablee.SetActive(true);
     }
 
     public void attributeInformationToDrone(GameObject drone)
@@ -239,7 +229,6 @@ public class RedisClient : MonoBehaviour
             drone.GetComponent<DroneController>().droneBattery = batteryDrone;
             drone.GetComponent<DroneController>().zoomDrone = zoomDrone;
             drone.GetComponent<DroneController>().status = int.Parse("1");
-;
             drone.GetComponent<DroneController>().droneColor = droneColor;
 
             Color newColor;
