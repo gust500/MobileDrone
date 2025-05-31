@@ -6,74 +6,60 @@ using UnityEngine;
 
 public class AutomaticFlying : MonoBehaviour
 {
+    // Static AR Origin (shared across all drones)
+    private static bool originSet = false;
+    private static float arOriginLat, arOriginLon;
+
+    // Cache for AugmentedScript and Camera (optional: cache only once for performance)
     private AugmentedScript augmentedScript;
-    private float nextLatitude;
-    private float nextLongitude;
-    private float latitudeDrone; //39.7545206f 39.7325029f
-    private float longitudeDrone; //-8.8016551f -8.820128f
     private Camera camera;
-    private bool firstTime = true;
-    private float distance;
 
     public void getNewPositionLocation(float latitude, float longitude, float altitude)
     {
-        //helpText = GameObject.Find("Canvas/HelpText").GetComponent<TextMeshProUGUI>();
+        // Get references (cache if you prefer)
+        if (augmentedScript == null)
+            augmentedScript = GameObject.Find("ARCamera").GetComponent<AugmentedScript>();
+        if (camera == null)
+            camera = GameObject.Find("ARCamera").GetComponent<Camera>();
 
-        augmentedScript = GameObject.Find("ARCamera").GetComponent<AugmentedScript>();
-        camera = GameObject.Find("ARCamera").GetComponent<Camera>();
-
-        if (augmentedScript != null && augmentedScript.ready)
+        // Only proceed if AR is ready and location services are running
+        if (augmentedScript != null && augmentedScript.ready && Input.location.status == LocationServiceStatus.Running)
         {
-            if (firstTime)
+            // --- Set AR Origin on first use ---
+            if (!originSet)
             {
-                //first time to establish drone position
-                nextLatitude = latitude;
-                nextLongitude = longitude;
-
-                float currentLatitude = Input.location.lastData.latitude;
-                float currentLongitude = Input.location.lastData.longitude;
-                float distance = augmentedScript.Calc(currentLatitude, currentLongitude, nextLatitude, nextLongitude);
-                transform.position = new Vector3(0, 0, 0);
-                transform.rotation = getNorth(currentLatitude, currentLongitude, nextLatitude, nextLongitude);
-                transform.Translate(0, 0, distance);
-                firstTime = false;
+                arOriginLat = Input.location.lastData.latitude;
+                arOriginLon = Input.location.lastData.longitude;
+                originSet = true;
             }
-            else
-            {
-                //Update Current and next drone's coordinates
-                latitudeDrone = nextLatitude;
-                longitudeDrone = nextLongitude;
-                nextLatitude = latitude;
-                nextLongitude = longitude;
 
-                //Position and rotate drone
-                distance = augmentedScript.Calc(latitudeDrone, longitudeDrone, nextLatitude, nextLongitude);
-                transform.rotation = getNorth(latitudeDrone, longitudeDrone, nextLatitude, nextLongitude);
+            // --- Calculate Offset from AR Origin ---
+            float[] meters = CalculateOffset(arOriginLat, arOriginLon, latitude, longitude);
 
-                Vector3 movementVector = transform.rotation * new Vector3(0, 0, distance);
-                Vector3 finalPosition = transform.position + movementVector;
-
-                transform.Translate(0, 0, distance);
-            }
-            //change drone altitude
-            transform.position = new Vector3(transform.position.x, altitude, transform.position.z);
+            // --- Set Drone Position ---
+            // X = East/West, Y = Altitude, Z = North/South
+            transform.localPosition = new Vector3(meters[1], altitude, meters[0]);
         }
     }
 
-    IEnumerator MoveToPosition(Vector3 targetPosition, float duration)
+    // Returns [northMeters, eastMeters]
+    private float[] CalculateOffset(float lat1, float lon1, float lat2, float lon2)
     {
-        Vector3 startPosition = transform.position;
-        float elapsedTime = 0f;
+        float earthRadius = 6378137f; // meters
 
-        while (elapsedTime < duration)
-        {
-            transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        transform.position = targetPosition;
+        float dLat = Mathf.Deg2Rad * (lat2 - lat1);
+        float dLon = Mathf.Deg2Rad * (lon2 - lon1);
+
+        float avgLat = Mathf.Deg2Rad * ((lat1 + lat2) / 2.0f);
+
+        // Equirectangular approximation
+        float north = dLat * earthRadius;
+        float east = dLon * earthRadius * Mathf.Cos(avgLat);
+
+        return new float[] { north, east };
     }
 
+    // (Optional) For compatibility, keep rotation logic if needed
     private float angleFromCoordinate(float lat1, float long1, float lat2, float long2)
     {
         lat1 *= Mathf.Deg2Rad;
@@ -98,4 +84,6 @@ public class AutomaticFlying : MonoBehaviour
 
         return Quaternion.Euler(0, cameraRotation.eulerAngles.y + compass.eulerAngles.y + bearing, 0);
     }
+
+    // (Optional) You can delete MoveToPosition and legacy variables if unused.
 }
