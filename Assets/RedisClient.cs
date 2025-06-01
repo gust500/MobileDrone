@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StackExchange.Redis;
 using System;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -37,33 +38,27 @@ public class RedisClient : MonoBehaviour
 
     public WS_Client wsClient;
 
-    // Mapping from droneID to drone GameObject
+    // --- AR Origin ---
+    public static double originLat;
+    public static double originLon;
+    public static Vector3 originUnityPos;
+    public static bool originSet = false;
+
+    // --- Mapping from droneID to drone GameObject ---
     private Dictionary<string, GameObject> dronesByID = new Dictionary<string, GameObject>();
 
-    // --- GPS TO UNITY WORLD CONVERSION ---
     private const double EarthRadius = 6378137.0;
 
-    public static Vector3 GPSPositionToWorld(
-        double originLat, double originLon, Vector3 originUnityPos,
-        double targetLat, double targetLon, float altitude)
-    {
-        double dLat = (targetLat - originLat) * Mathf.Deg2Rad;
-        double dLon = (targetLon - originLon) * Mathf.Deg2Rad;
-
-        double meanLat = (originLat + targetLat) * 0.5 * Mathf.Deg2Rad;
-        double metersPerLat = 111132.954 - 559.822 * Mathf.Cos(2 * meanLat) + 1.175 * Mathf.Cos(4 * meanLat);
-        double metersPerLon = (Mathf.PI / 180.0) * EarthRadius * Mathf.Cos(meanLat);
-
-        double deltaNorth = dLat * metersPerLat;
-        double deltaEast = dLon * metersPerLon;
-
-        Vector3 offset = new Vector3((float)deltaEast, altitude, (float)deltaNorth);
-
-        return originUnityPos + offset;
-    }
-
     void Start()
-    {
+    { 
+        // Initialize AR origin if not already set and GPS running
+        if (!originSet && Input.location.status == LocationServiceStatus.Running)
+        {
+            originLat = Input.location.lastData.latitude;
+            originLon = Input.location.lastData.longitude;
+            originUnityPos = transform.position;
+            originSet = true;
+        }
         latestDroneUpdated = null;
         redisConnected = false;
         sceneName = SceneManager.GetActiveScene().name;
@@ -74,6 +69,7 @@ public class RedisClient : MonoBehaviour
         if (redis != null && redis.IsConnected && droneReady)
         {
             changeDroneInformation(); //virtual drone
+            //wsClient.changeDroneInformationTest(); //real drone
             droneReady = false;
         }
     }
@@ -92,6 +88,7 @@ public class RedisClient : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"Redis connection failed: {e.Message}");
+            // Update UI to show connection failure
         }
     
         // Reinitialize Redis functionality
@@ -127,29 +124,12 @@ public class RedisClient : MonoBehaviour
             }
         }
     }
-    
-private void UpdateDroneInformation(GameObject drone)
-{
-    if (drone == null || !AROriginAnchor.originSet)
-        return;
 
-    float latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
-    float longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
-    float altitudeDrone = drone.GetComponent<DroneController>().altitudeDrone;
-
-    Vector3 targetWorldPos = GPSPositionToWorld(
-        AROriginAnchor.originLat, AROriginAnchor.originLon, AROriginAnchor.originUnityPos,
-        latitudeDrone, longitudeDrone, altitudeDrone
-    );
-
-    // Smooth movement (feel free to tweak 0.2f)
-    drone.transform.position = Vector3.Lerp(
-        drone.transform.position,
-        targetWorldPos,
-        0.2f
-    );
-}
-
+    private void UpdateDroneInformation(GameObject drone)
+    {
+        // Not needed if using GPS-to-Unity positioning,
+        // but you could smoothly LERP from old to new position here if you want.
+    }
 
     private void getRedisData()
     {
@@ -227,6 +207,25 @@ private void UpdateDroneInformation(GameObject drone)
         }
     }
 
+    public static Vector3 GPSPositionToWorld(
+        double originLat, double originLon, Vector3 originUnityPos,
+        double targetLat, double targetLon, float altitude)
+    {
+        double dLat = (targetLat - originLat) * Mathf.Deg2Rad;
+        double dLon = (targetLon - originLon) * Mathf.Deg2Rad;
+
+        double meanLat = (originLat + targetLat) * 0.5 * Mathf.Deg2Rad;
+        double metersPerLat = 111132.954 - 559.822 * Mathf.Cos(2 * meanLat) + 1.175 * Mathf.Cos(4 * meanLat);
+        double metersPerLon = (Mathf.PI / 180.0) * EarthRadius * Mathf.Cos(meanLat);
+
+        double deltaNorth = dLat * metersPerLat;
+        double deltaEast = dLon * metersPerLon;
+
+        Vector3 offset = new Vector3((float)deltaEast, altitude, (float)deltaNorth);
+
+        return originUnityPos + offset;
+    }
+
     public void attributeInformationToDrone(GameObject drone)
     {
         float latitudeDrone = float.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
@@ -235,9 +234,9 @@ private void UpdateDroneInformation(GameObject drone)
         float batteryDrone = float.Parse(battery, System.Globalization.CultureInfo.InvariantCulture);
         float zoomDrone = float.Parse(zoom, System.Globalization.CultureInfo.InvariantCulture);
 
-        if (drone != null && AROriginAnchor.originSet)
+        if (drone != null)
         {
-            // Assign data
+            // Always assign metadata for the UI & drone list
             drone.GetComponent<DroneController>().droneID = droneID;
             drone.GetComponent<DroneController>().droneName = droneName;
             drone.GetComponent<DroneController>().latitudeDrone = latitudeDrone;
@@ -254,16 +253,17 @@ private void UpdateDroneInformation(GameObject drone)
                 drone.transform.GetChild(1).gameObject.GetComponent<Renderer>().material.color = newColor;
             }
 
-            // --- Set world-space position ---
-            Vector3 worldPos = GPSPositionToWorld(
-                AROriginAnchor.originLat, AROriginAnchor.originLon, AROriginAnchor.originUnityPos,
-                latitudeDrone, longitudeDrone, altitudeDrone
-            );
-            drone.transform.position = worldPos;
+            // --- WORLD-SPACE PLACEMENT USING GPS ---
+            if (originSet)
+            {
+                Vector3 worldPos = GPSPositionToWorld(
+                    originLat, originLon, originUnityPos,
+                    latitudeDrone, longitudeDrone, altitudeDrone
+                );
+                drone.transform.position = worldPos;
+            }
 
-            // If you want to animate, LERP to worldPos instead
-
-            // ListVehicle logic
+            // Always update the vehicle list
             ListVehicles listVehiclesScript = GameObject.Find("GameManager").GetComponent<ListVehicles>();
             listVehiclesScript.changeVehicleList(drone);
 
