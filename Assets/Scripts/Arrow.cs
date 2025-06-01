@@ -33,27 +33,26 @@ public class Arrow : MonoBehaviour
 
             if (drone != null)
             {
-                Vector3 droneLocalPos = drone.transform.localPosition;
-
-                // Distance in meters - update the property
-                distanceDrone = droneLocalPos.magnitude;
+                // Calculate distance in world space
+                distanceDrone = Vector3.Distance(drone.transform.position, camera.transform.position);
 
                 // UI text update
                 if (!gameManager.isViewCameraActive)
                     distanceTextObject.GetComponent<TextMeshProUGUI>().text = "Distance: " + distanceDrone.ToString("0.000") + "m";
 
-                // ARROW DIRECTION: angle in camera's horizontal plane
+                // Calculate direction in world space, on XZ plane
                 Vector3 camForward = camera.transform.forward;
+                Vector3 toDrone = drone.transform.position - camera.transform.position;
                 camForward.y = 0;
-                camForward.Normalize();
-
-                Vector3 toDrone = droneLocalPos;
                 toDrone.y = 0;
-                toDrone.Normalize();
 
-                float angle = Vector3.SignedAngle(camForward, toDrone, Vector3.up);
-
-                transform.localEulerAngles = new Vector3(0, 0, -angle);
+                if (toDrone.sqrMagnitude > 0.001f)
+                {
+                    camForward.Normalize();
+                    toDrone.Normalize();
+                    float angle = Vector3.SignedAngle(camForward, toDrone, Vector3.up);
+                    transform.localEulerAngles = new Vector3(0, 0, -angle);
+                }
 
                 if (distanceDrone <= 15)
                 {

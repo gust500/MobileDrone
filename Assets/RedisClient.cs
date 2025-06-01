@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using StackExchange.Redis;
 using System;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -32,17 +31,37 @@ public class RedisClient : MonoBehaviour
     public Button buttonVisualization;
     public Button buttonRetrieval;
     public TextMeshProUGUI redisText;
-
     private float updateDroneTimer = 0f;
     private GameObject latestDroneUpdated;
     private ConnectionMultiplexer redis; // redis client
 
     public WS_Client wsClient;
 
-    // --- ADDED: Mapping from droneID to drone GameObject ---
+    // Mapping from droneID to drone GameObject
     private Dictionary<string, GameObject> dronesByID = new Dictionary<string, GameObject>();
 
-    // Start is called before the first frame update
+    // --- GPS TO UNITY WORLD CONVERSION ---
+    private const double EarthRadius = 6378137.0;
+
+    public static Vector3 GPSPositionToWorld(
+        double originLat, double originLon, Vector3 originUnityPos,
+        double targetLat, double targetLon, float altitude)
+    {
+        double dLat = (targetLat - originLat) * Mathf.Deg2Rad;
+        double dLon = (targetLon - originLon) * Mathf.Deg2Rad;
+
+        double meanLat = (originLat + targetLat) * 0.5 * Mathf.Deg2Rad;
+        double metersPerLat = 111132.954 - 559.822 * Mathf.Cos(2 * meanLat) + 1.175 * Mathf.Cos(4 * meanLat);
+        double metersPerLon = (Mathf.PI / 180.0) * EarthRadius * Mathf.Cos(meanLat);
+
+        double deltaNorth = dLat * metersPerLat;
+        double deltaEast = dLon * metersPerLon;
+
+        Vector3 offset = new Vector3((float)deltaEast, altitude, (float)deltaNorth);
+
+        return originUnityPos + offset;
+    }
+
     void Start()
     {
         latestDroneUpdated = null;
@@ -54,11 +73,9 @@ public class RedisClient : MonoBehaviour
     {
         if (redis != null && redis.IsConnected && droneReady)
         {
-            //Change drone Information if we receive drone data from Redis Server
             changeDroneInformation(); //virtual drone
-            //wsClient.changeDroneInformationTest(); //real drone
             droneReady = false;
-        }        
+        }
     }
     
     public void UpdateRedisConnection(string newAddress)
@@ -75,7 +92,6 @@ public class RedisClient : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError($"Redis connection failed: {e.Message}");
-            // Update UI to show connection failure
         }
     
         // Reinitialize Redis functionality
@@ -86,20 +102,17 @@ public class RedisClient : MonoBehaviour
         
         if (sceneName == "Visualization" || sceneName == "Retrieval")
         {
-            //Visualization or Retrieval Scene
             parentDrone = GameObject.Find("Drones").transform;
             droneReady = false;
 
             if (redis != null && redis.IsConnected)
             {
-                //Get Redis Data if redis is connected
                 redisConnected = true;
                 getRedisData();
             }
         }
         else
         {
-            //Home Scene
             if (redis != null && redis.IsConnected)
             {
                 buttonVisualization.enabled = true;
@@ -110,25 +123,33 @@ public class RedisClient : MonoBehaviour
             }
             else
             {
-                /*buttonVisualization.enabled = false;
-                buttonRetrieval.enabled = false;
-                buttonVisualization.gameObject.GetComponent<Image>().color = Color.gray;
-                buttonRetrieval.gameObject.GetComponent<Image>().color = Color.gray;*/
                 redisText.text = "Not Connected to Server";
             }
         }
     }
+    
+private void UpdateDroneInformation(GameObject drone)
+{
+    if (drone == null || !AROriginAnchor.originSet)
+        return;
 
-    private void UpdateDroneInformation(GameObject drone)
-    {
-        //update drone position with the updated data
-        float latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
-        float longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
-        float altitudeDrone = drone.GetComponent<DroneController>().altitudeDrone;
+    float latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
+    float longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
+    float altitudeDrone = drone.GetComponent<DroneController>().altitudeDrone;
 
-        drone.GetComponent<AutomaticFlying>().getNewPositionLocation(latitudeDrone, longitudeDrone, altitudeDrone);
-        latestDroneUpdated = drone;
-    }
+    Vector3 targetWorldPos = GPSPositionToWorld(
+        AROriginAnchor.originLat, AROriginAnchor.originLon, AROriginAnchor.originUnityPos,
+        latitudeDrone, longitudeDrone, altitudeDrone
+    );
+
+    // Smooth movement (feel free to tweak 0.2f)
+    drone.transform.position = Vector3.Lerp(
+        drone.transform.position,
+        targetWorldPos,
+        0.2f
+    );
+}
+
 
     private void getRedisData()
     {
@@ -137,7 +158,6 @@ public class RedisClient : MonoBehaviour
         //Subscribe to the channel "43"
         subScriber.Subscribe("43", (channel, message) =>
         {
-            //Output received message from VARCAM (Redis Server)
             Debug.Log("Message" + message + "received successfully");
 
             //ID
@@ -195,12 +215,10 @@ public class RedisClient : MonoBehaviour
         GameObject drone;
         if (dronesByID.TryGetValue(droneID, out drone) && drone != null)
         {
-            // Update existing drone's data
             attributeInformationToDrone(drone);
         }
         else
         {
-            // Instantiate a new drone and track it by ID
             GameObject newDrone = Instantiate(virtualDroneObject, new Vector3(0, 0, 0), Quaternion.identity, parentDrone);
             newDrone.name = "QuadDrone" + i++; // Or just use droneID as the name
             attributeInformationToDrone(newDrone);
@@ -211,16 +229,15 @@ public class RedisClient : MonoBehaviour
 
     public void attributeInformationToDrone(GameObject drone)
     {
-        //update information of the specific drone (new drone or selected drone)
         float latitudeDrone = float.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
         float longitudeDrone = float.Parse(longitude, System.Globalization.CultureInfo.InvariantCulture);
         float altitudeDrone = float.Parse(altitude, System.Globalization.CultureInfo.InvariantCulture);
         float batteryDrone = float.Parse(battery, System.Globalization.CultureInfo.InvariantCulture);
         float zoomDrone = float.Parse(zoom, System.Globalization.CultureInfo.InvariantCulture);
 
-        if (drone != null)
+        if (drone != null && AROriginAnchor.originSet)
         {
-            //attribute data to the specific drone
+            // Assign data
             drone.GetComponent<DroneController>().droneID = droneID;
             drone.GetComponent<DroneController>().droneName = droneName;
             drone.GetComponent<DroneController>().latitudeDrone = latitudeDrone;
@@ -234,14 +251,19 @@ public class RedisClient : MonoBehaviour
             Color newColor;
             if (ColorUtility.TryParseHtmlString(droneColor, out newColor))
             {
-                //Change drone body material color
-                drone.transform.GetChild(1).gameObject.GetComponent<Renderer>().material.color = newColor;             
+                drone.transform.GetChild(1).gameObject.GetComponent<Renderer>().material.color = newColor;
             }
 
-            //update drone position with the updated data
-            drone.GetComponent<AutomaticFlying>().getNewPositionLocation(latitudeDrone, longitudeDrone, altitudeDrone);
+            // --- Set world-space position ---
+            Vector3 worldPos = GPSPositionToWorld(
+                AROriginAnchor.originLat, AROriginAnchor.originLon, AROriginAnchor.originUnityPos,
+                latitudeDrone, longitudeDrone, altitudeDrone
+            );
+            drone.transform.position = worldPos;
 
-            //modify list vehicle view in Retrieval mode
+            // If you want to animate, LERP to worldPos instead
+
+            // ListVehicle logic
             ListVehicles listVehiclesScript = GameObject.Find("GameManager").GetComponent<ListVehicles>();
             listVehiclesScript.changeVehicleList(drone);
 
@@ -249,8 +271,6 @@ public class RedisClient : MonoBehaviour
         }
     }
 
-    //connect to Redis client
-    
     private ConnectionMultiplexer CreateRedisConnection(string address)
     {
         return ConnectionMultiplexer.Connect(
@@ -260,13 +280,4 @@ public class RedisClient : MonoBehaviour
                 AbortOnConnectFail = false,
             });
     }
-    /*static async Task Main(string[] args)
-    {
-        //get redis database to get information from Redis Server
-        string sceneName = SceneManager.GetActiveScene().name;
-        if (sceneName == "Visualization" || sceneName == "Retrieval")
-        {
-            var db = redis.GetDatabase();
-        }
-    }*/
 }
