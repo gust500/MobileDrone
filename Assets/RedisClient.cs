@@ -215,8 +215,8 @@ public class RedisClient : MonoBehaviour
         double dLon = (targetLon - originLon) * Mathf.Deg2Rad;
 
         double meanLat = (originLat + targetLat) * 0.5 * Mathf.Deg2Rad;
-        double metersPerLat = 111132.954 - 559.822 * Mathf.Cos(2 * meanLat) + 1.175 * Mathf.Cos(4 * meanLat);
-        double metersPerLon = (Mathf.PI / 180.0) * EarthRadius * Mathf.Cos(meanLat);
+        double metersPerLat = 111132.954 - 559.822 * Mathf.Cos((float)(2 * meanLat)) + 1.175 * Mathf.Cos((float)(4 * meanLat));
+        double metersPerLon = (Mathf.PI / 180.0) * EarthRadius * Mathf.Cos((float)meanLat);
 
         double deltaNorth = dLat * metersPerLat;
         double deltaEast = dLon * metersPerLon;
