@@ -112,8 +112,6 @@ public class AugmentedScript : MonoBehaviour
         currentLatitude = newLat;
         currentLongitude = newLon;
 
-        /*currentLatitude = Mathf.Lerp(currentLatitude, newLat, 0.2f);
-        currentLongitude = Mathf.Lerp(currentLongitude, newLon, 0.2f);*/
     }
 
 
