@@ -18533,12 +18533,12 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void GameManager_Update_m7F29D8E933B8D21D2E67
 		}
 	}
 	{
-		// float currentLatitude = augmentedScript.currentLatitude;
+		// double currentLatitude = augmentedScript.currentLatitude;
 		AugmentedScript_tE843102ED7E8A3E8E0323CB0772A9F9FD6E52C70* L_13 = __this->___augmentedScript_5;
 		NullCheck(L_13);
 		float L_14 = L_13->___currentLatitude_4;
 		V_0 = L_14;
-		// float currentLongitude = augmentedScript.currentLongitude;
+		// double currentLongitude = augmentedScript.currentLongitude;
 		AugmentedScript_tE843102ED7E8A3E8E0323CB0772A9F9FD6E52C70* L_15 = __this->___augmentedScript_5;
 		NullCheck(L_15);
 		float L_16 = L_15->___currentLongitude_5;

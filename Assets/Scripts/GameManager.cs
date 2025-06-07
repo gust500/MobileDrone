@@ -146,8 +146,8 @@ public class GameManager : MonoBehaviour
 
                 if (sceneName == "Retrieval")
                 {
-                    float currentLatitude = augmentedScript.currentLatitude;
-                    float currentLongitude = augmentedScript.currentLongitude;
+                    double currentLatitude = augmentedScript.currentLatitude;
+                    double currentLongitude = augmentedScript.currentLongitude;
 
                     //update latitude/longitude location text of user and drone in Retrieval Mode
                     latitudeText.GetComponent<TextMeshProUGUI>().text = "lat: " + currentLatitude.ToString();

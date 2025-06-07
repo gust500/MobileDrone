@@ -13,8 +13,8 @@ public class Arrow : MonoBehaviour
     public GameObject droneInfo;
     private GameObject distanceTextObject;
     public Quaternion north;
-    public float currentLatitude;
-    public float currentLongitude;
+    public double currentLatitude;
+    public double currentLongitude;
     public float distanceDrone;
     public bool firstTime;
     public Camera camera;
@@ -86,8 +86,8 @@ public class Arrow : MonoBehaviour
     {
         //Verify which drone is closer
         /*GameObject selectedDrone = null;
-        float currentLatitude = augmentedScript.currentLatitude;
-        float currentLongitude = augmentedScript.currentLongitude;
+        double currentLatitude = augmentedScript.currentLatitude;
+        double currentLongitude = augmentedScript.currentLongitude;
         distanceDrone = 999999999999999;
 
 

@@ -14980,7 +14980,7 @@ IL_0047:
 		// nextLongitude = longitude;
 		float L_12 = ___1_longitude;
 		__this->___nextLongitude_6 = L_12;
-		// float currentLatitude = Input.location.lastData.latitude;
+		// double currentLatitude = Input.location.lastData.latitude;
 		LocationService_tF2F2720FE2C07562EBFD128889F9A99F4B41B1B2* L_13;
 		L_13 = Input_get_location_m1D1FA0938E5B83C46A666CE78D95A58B39164DB5(NULL);
 		NullCheck(L_13);
@@ -14990,7 +14990,7 @@ IL_0047:
 		float L_15;
 		L_15 = LocationInfo_get_latitude_mAF0A46443555AF18EA3C516292CB92B1669CA863((&V_5), NULL);
 		V_2 = L_15;
-		// float currentLongitude = Input.location.lastData.longitude;
+		// double currentLongitude = Input.location.lastData.longitude;
 		LocationService_tF2F2720FE2C07562EBFD128889F9A99F4B41B1B2* L_16;
 		L_16 = Input_get_location_m1D1FA0938E5B83C46A666CE78D95A58B39164DB5(NULL);
 		NullCheck(L_16);
@@ -18469,12 +18469,12 @@ IL_001d:
 		}
 	}
 	{
-		// float currentLatitude = augmentedScript.currentLatitude;
+		// double currentLatitude = augmentedScript.currentLatitude;
 		AugmentedScript_tE843102ED7E8A3E8E0323CB0772A9F9FD6E52C70* L_20 = __this->___augmentedScript_4;
 		NullCheck(L_20);
 		float L_21 = L_20->___currentLatitude_4;
 		V_3 = L_21;
-		// float currentLongitude = augmentedScript.currentLongitude;
+		// double currentLongitude = augmentedScript.currentLongitude;
 		AugmentedScript_tE843102ED7E8A3E8E0323CB0772A9F9FD6E52C70* L_22 = __this->___augmentedScript_4;
 		NullCheck(L_22);
 		float L_23 = L_22->___currentLongitude_5;
