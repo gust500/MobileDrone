@@ -9,13 +9,13 @@ public class AutomaticFlying : MonoBehaviour
     private AugmentedScript augmentedScript;
     private float nextLatitude;
     private float nextLongitude;
-    private float latitudeDrone; //39.7545206f 39.7325029f
-    private float longitudeDrone; //-8.8016551f -8.820128f
+    private double latitudeDrone; //39.7545206f 39.7325029f
+    private double longitudeDrone; //-8.8016551f -8.820128f
     private Camera camera;
     private bool firstTime = true;
     private float distance;
 
-    public void getNewPositionLocation(float latitude, float longitude, float altitude)
+    public void getNewPositionLocation(double latitude, double longitude, float altitude)
     {
         //helpText = GameObject.Find("Canvas/HelpText").GetComponent<TextMeshProUGUI>();
 

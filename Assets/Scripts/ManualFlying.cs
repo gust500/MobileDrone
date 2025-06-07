@@ -21,8 +21,8 @@ public class ManualFlying : MonoBehaviour
         //place drone to the specific GPS coordinates
         if (augmentedScript.ready && firstTime)
         {
-            float latitudeDrone = GetComponent<DroneController>().latitudeDrone;
-            float longitudeDrone = GetComponent<DroneController>().longitudeDrone;
+            double latitudeDrone = GetComponent<DroneController>().latitudeDrone;
+            double longitudeDrone = GetComponent<DroneController>().longitudeDrone;
             float distance = augmentedScript.Calc(augmentedScript.currentLatitude, augmentedScript.currentLongitude, latitudeDrone, longitudeDrone);
             transform.position = new Vector3(0, 0, 0);
             transform.rotation = getNorth(augmentedScript.currentLatitude, augmentedScript.currentLongitude, latitudeDrone, longitudeDrone);

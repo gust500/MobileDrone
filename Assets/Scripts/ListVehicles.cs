@@ -101,8 +101,8 @@ public class ListVehicles : MonoBehaviour
             id = drone.GetComponent<DroneController>().droneID;
         string name = drone.GetComponent<DroneController>().droneName;
         float altitude = drone.GetComponent<DroneController>().altitudeDrone;
-        float latitude = drone.GetComponent<DroneController>().latitudeDrone;
-        float longitude = drone.GetComponent<DroneController>().longitudeDrone;
+        double latitude = drone.GetComponent<DroneController>().latitudeDrone;
+        double longitude = drone.GetComponent<DroneController>().longitudeDrone;
         int status = drone.GetComponent<DroneController>().status;
 
         //attribute drone Information to visualze information

@@ -124,8 +124,8 @@ namespace Mapbox.Unity.Utilities
 
 		public static Vector2d GeoFromGlobePosition(Vector3 point, float radius)
 		{
-			float latitude = Mathf.Asin(point.y / radius);
-			float longitude = Mathf.Atan2(point.z, point.x);
+			double latitude = Mathf.Asin(point.y / radius);
+			double longitude = Mathf.Atan2(point.z, point.x);
 			return new Vector2d(latitude * Mathf.Rad2Deg, longitude * Mathf.Rad2Deg);
 		}
 
@@ -344,7 +344,7 @@ namespace Mapbox.Unity.Utilities
 		/// <param name="latitude"> The latitude. </param>
 		/// <param name="zoom"> Zoom level. </param>
 		/// <returns> Meters per pixel. </returns>
-		public static float GetTileScaleInMeters(float latitude, int zoom)
+		public static float GetTileScaleInMeters(double latitude, int zoom)
 		{
 			return (float)(40075016.685578d * Math.Cos(Mathf.Deg2Rad * latitude) / Math.Pow(2f, zoom + 8));
 		}
@@ -356,7 +356,7 @@ namespace Mapbox.Unity.Utilities
 		/// <param name="latitude"> The latitude. </param>
 		/// <param name="zoom"> Zoom level. </param>
 		/// <returns> Degrees per tile. </returns>
-		public static float GetTileScaleInDegrees(float latitude, int zoom)
+		public static float GetTileScaleInDegrees(double latitude, int zoom)
 		{
 			return (float)(360.0f / Math.Pow(2f, zoom + 8));
 		}

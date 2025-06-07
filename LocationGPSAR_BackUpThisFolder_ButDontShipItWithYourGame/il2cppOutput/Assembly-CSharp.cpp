@@ -14112,7 +14112,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void RedisClient_UpdateDroneInformation_m43C9
 	float V_1 = 0.0f;
 	float V_2 = 0.0f;
 	{
-		// float latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
+		// double latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_0 = ___0_drone;
 		NullCheck(L_0);
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_1;
@@ -14120,7 +14120,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void RedisClient_UpdateDroneInformation_m43C9
 		NullCheck(L_1);
 		float L_2 = L_1->___latitudeDrone_12;
 		V_0 = L_2;
-		// float longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
+		// double longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_3 = ___0_drone;
 		NullCheck(L_3);
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_4;
@@ -14415,7 +14415,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void RedisClient_attributeInformationToDrone_
 	float V_3 = 0.0f;
 	float V_4 = 0.0f;
 	{
-		// float latitudeDrone = float.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
+		// double latitudeDrone = float.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
 		String_t* L_0 = __this->___latitude_9;
 		il2cpp_codegen_runtime_class_init_inline(CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0_il2cpp_TypeInfo_var);
 		CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0* L_1;
@@ -14423,7 +14423,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void RedisClient_attributeInformationToDrone_
 		float L_2;
 		L_2 = Single_Parse_mF40465AC387D690175D63EFFF44B0E810C090786(L_0, L_1, NULL);
 		V_0 = L_2;
-		// float longitudeDrone = float.Parse(longitude, System.Globalization.CultureInfo.InvariantCulture);
+		// double longitudeDrone = float.Parse(longitude, System.Globalization.CultureInfo.InvariantCulture);
 		String_t* L_3 = __this->___longitude_10;
 		CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0* L_4;
 		L_4 = CultureInfo_get_InvariantCulture_mD1E96DC845E34B10F78CB744B0CB5D7D63CEB1E6(NULL);
@@ -15474,7 +15474,7 @@ IL_00af:
 		}
 	}
 	{
-		// float latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
+		// double latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_26 = V_0;
 		NullCheck(L_26);
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_27;
@@ -15482,7 +15482,7 @@ IL_00af:
 		NullCheck(L_27);
 		float L_28 = L_27->___latitudeDrone_12;
 		V_1 = L_28;
-		// float longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
+		// double longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_29 = V_0;
 		NullCheck(L_29);
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_30;
@@ -20105,7 +20105,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ListVehicles_getDroneInList_mB0ED837CF94
 		NullCheck(L_7);
 		float L_8 = L_7->___altitudeDrone_14;
 		V_2 = L_8;
-		// float latitude = drone.GetComponent<DroneController>().latitudeDrone;
+		// double latitude = drone.GetComponent<DroneController>().latitudeDrone;
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_9 = ___0_drone;
 		NullCheck(L_9);
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_10;
@@ -20113,7 +20113,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ListVehicles_getDroneInList_mB0ED837CF94
 		NullCheck(L_10);
 		float L_11 = L_10->___latitudeDrone_12;
 		V_3 = L_11;
-		// float longitude = drone.GetComponent<DroneController>().longitudeDrone;
+		// double longitude = drone.GetComponent<DroneController>().longitudeDrone;
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_12 = ___0_drone;
 		NullCheck(L_12);
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_13;
@@ -20430,13 +20430,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void ManualFlying_Update_mA62281D99F5C022F71D
 		}
 	}
 	{
-		// float latitudeDrone = GetComponent<DroneController>().latitudeDrone;
+		// double latitudeDrone = GetComponent<DroneController>().latitudeDrone;
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_3;
 		L_3 = Component_GetComponent_TisDroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E_m1AA38F713DC36252A1F9A6639CAD5CD665C8E177(__this, Component_GetComponent_TisDroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E_m1AA38F713DC36252A1F9A6639CAD5CD665C8E177_RuntimeMethod_var);
 		NullCheck(L_3);
 		float L_4 = L_3->___latitudeDrone_12;
 		V_0 = L_4;
-		// float longitudeDrone = GetComponent<DroneController>().longitudeDrone;
+		// double longitudeDrone = GetComponent<DroneController>().longitudeDrone;
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_5;
 		L_5 = Component_GetComponent_TisDroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E_m1AA38F713DC36252A1F9A6639CAD5CD665C8E177(__this, Component_GetComponent_TisDroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E_m1AA38F713DC36252A1F9A6639CAD5CD665C8E177_RuntimeMethod_var);
 		NullCheck(L_5);

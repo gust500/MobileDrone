@@ -21099,7 +21099,7 @@ IL2CPP_EXTERN_C  void MapboxLocationInfoMock__ctor_m4EB3435897A123A2E7B4DE264988
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoMock_get_latitude_m8ECEFD35383624F901EAA2EA181259AFDE323345 (MapboxLocationInfoMock_t42A8389D1864432F2D4539B57E53D1A13D6FC371* __this, const RuntimeMethod* method) 
 {
 	{
-		// public float latitude { get { return (float)_location.LatitudeLongitude.x; } }
+		// public double latitude { get { return (float)_location.LatitudeLongitude.x; } }
 		Location_t093B2445FAF9DC767BF78DAF81CEA8909A80BCFF* L_0 = (&__this->____location_0);
 		Vector2d_t56C00F875E7B711F76931D3FD85D1D47957349FB* L_1 = (&L_0->___LatitudeLongitude_0);
 		double L_2 = L_1->___x_1;
@@ -21119,7 +21119,7 @@ IL2CPP_EXTERN_C  float MapboxLocationInfoMock_get_latitude_m8ECEFD35383624F901EA
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoMock_get_longitude_mFF5F2AE07DDFCE270123C887D2A473D56EE08A56 (MapboxLocationInfoMock_t42A8389D1864432F2D4539B57E53D1A13D6FC371* __this, const RuntimeMethod* method) 
 {
 	{
-		// public float longitude { get { return (float)_location.LatitudeLongitude.y; } }
+		// public double longitude { get { return (float)_location.LatitudeLongitude.y; } }
 		Location_t093B2445FAF9DC767BF78DAF81CEA8909A80BCFF* L_0 = (&__this->____location_0);
 		Vector2d_t56C00F875E7B711F76931D3FD85D1D47957349FB* L_1 = (&L_0->___LatitudeLongitude_0);
 		double L_2 = L_1->___y_2;
@@ -21237,7 +21237,7 @@ IL2CPP_EXTERN_C  void MapboxLocationInfoUnityWrapper__ctor_mA8E2DA01A6FE90F34117
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoUnityWrapper_get_latitude_mBA10E45B35C27C5F8AEFA581ACB46F3AA474ACE3 (MapboxLocationInfoUnityWrapper_t566C25D18BC303E964976A1DF02805A58C6CFF88* __this, const RuntimeMethod* method) 
 {
 	{
-		// public float latitude { get { return _locationInfo.latitude; } }
+		// public double latitude { get { return _locationInfo.latitude; } }
 		LocationInfo_tBFD49220A54B71CDF564F61822F7B8D524465441* L_0 = (&__this->____locationInfo_0);
 		float L_1;
 		L_1 = LocationInfo_get_latitude_mAF0A46443555AF18EA3C516292CB92B1669CA863(L_0, NULL);
@@ -21257,7 +21257,7 @@ IL2CPP_EXTERN_C  float MapboxLocationInfoUnityWrapper_get_latitude_mBA10E45B35C2
 IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoUnityWrapper_get_longitude_m77B46F5BE6C42CBB6E822A065721478FBF95C223 (MapboxLocationInfoUnityWrapper_t566C25D18BC303E964976A1DF02805A58C6CFF88* __this, const RuntimeMethod* method) 
 {
 	{
-		// public float longitude { get { return _locationInfo.longitude; } }
+		// public double longitude { get { return _locationInfo.longitude; } }
 		LocationInfo_tBFD49220A54B71CDF564F61822F7B8D524465441* L_0 = (&__this->____locationInfo_0);
 		float L_1;
 		L_1 = LocationInfo_get_longitude_mCB720DD0E139B7C614F78D40595E1BBF1F5433A2(L_0, NULL);

@@ -12765,14 +12765,14 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Vector2d_t56C00F875E7B711F76931D3FD85D1D47957
 	Vector2d_t56C00F875E7B711F76931D3FD85D1D47957349FB V_2;
 	memset((&V_2), 0, sizeof(V_2));
 	{
-		// float latitude = Mathf.Asin(point.y / radius);
+		// double latitude = Mathf.Asin(point.y / radius);
 		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_0 = ___0_point;
 		float L_1 = L_0.___y_3;
 		float L_2 = ___1_radius;
 		float L_3;
 		L_3 = asinf(((float)(L_1/L_2)));
 		V_0 = L_3;
-		// float longitude = Mathf.Atan2(point.z, point.x);
+		// double longitude = Mathf.Atan2(point.z, point.x);
 		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_4 = ___0_point;
 		float L_5 = L_4.___z_4;
 		Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 L_6 = ___0_point;

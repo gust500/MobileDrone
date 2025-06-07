@@ -19,9 +19,9 @@ namespace Mapbox.Unity.Location
 		private LocationInfo _locationInfo;
 
 
-		public float latitude { get { return _locationInfo.latitude; } }
+		public double latitude { get { return _locationInfo.latitude; } }
 
-		public float longitude { get { return _locationInfo.longitude; } }
+		public double longitude { get { return _locationInfo.longitude; } }
 
 		public float altitude { get { return _locationInfo.altitude; } }
 

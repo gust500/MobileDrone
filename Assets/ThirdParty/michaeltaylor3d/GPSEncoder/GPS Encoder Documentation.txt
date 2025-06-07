@@ -10,7 +10,7 @@ simply pass that position into this function.
 
 
 public static Vector3 GPSToUCS(Vector2 gps)
-public static Vector3 GPSToUCS(float latitude, float longitude)
+public static Vector3 GPSToUCS(double latitude, double longitude)
 -------------------------------------------------------
 To find the (X,Y,Z) equivalent of a set of GPS coordinates.
 Pass the latitude and longitude into one of these functions.
@@ -22,7 +22,7 @@ public static void SetLocalOrigin(Vector2 localOrigin)
 -------------------------------------------------------
 By Default All of your conversions will assume that your using a 
 latitude/longitude origin of (0,0). This places you at the real life origin
-of the earth’s lat/lon just outside of the gulf of new guinea, Africa. When using
+of the earthï¿½s lat/lon just outside of the gulf of new guinea, Africa. When using
 the default (0,0), all your GPS Conversions will be positioned as they would be 
 in real life.
 

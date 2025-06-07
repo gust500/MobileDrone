@@ -43,7 +43,7 @@ public sealed class GPSEncoder {
 	/// <returns>
 	/// Returns a Vector3 containing (X, Y, Z)
 	/// </returns>
-	public static Vector3 GPSToUCS(float latitude, float longitude)
+	public static Vector3 GPSToUCS(double latitude, double longitude)
 	{
 		return GetInstance().ConvertGPStoUCS(new Vector2(latitude,longitude));
 	}
