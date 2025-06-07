@@ -77,11 +77,6 @@ public class RedisClient : MonoBehaviour
         }
     
         // Reinitialize Redis functionality
-        if (redis.IsConnected && (sceneName == "Visualization" || sceneName == "Retrieval"))
-        {
-            getRedisData();
-        }
-        
         if (sceneName == "Visualization" || sceneName == "Retrieval")
         {
             //Visualization or Retrieval Scene
