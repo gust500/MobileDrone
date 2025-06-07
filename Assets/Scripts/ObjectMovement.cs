@@ -31,21 +31,21 @@ public class ObjectMovement : MonoBehaviour
         }
     }
 
-    Vector3 LatLongToCartesian(float latitude, float longitude)
+    Vector3 LatLongToCartesian(double latitude, double longitude)
     {
-        const float EarthRadius = 6371000f; // Radius of the Earth in meters
+        const double EarthRadius = 6371000f; // Radius of the Earth in meters
 
-        float radLatitude = Mathf.Deg2Rad * latitude;
-        float radLongitude = Mathf.Deg2Rad * longitude;
+        double radLatitude = Mathf.Deg2Rad * latitude;
+        double radLongitude = Mathf.Deg2Rad * longitude;
 
-        float x = EarthRadius * Mathf.Cos(radLatitude) * Mathf.Cos(radLongitude);
-        float y = EarthRadius * Mathf.Cos(radLatitude) * Mathf.Sin(radLongitude);
-        float z = EarthRadius * Mathf.Sin(radLatitude);
+        double x = EarthRadius * Mathf.Cos(radLatitude) * Mathf.Cos(radLongitude);
+        double y = EarthRadius * Mathf.Cos(radLatitude) * Mathf.Sin(radLongitude);
+        double z = EarthRadius * Mathf.Sin(radLatitude);
 
         return new Vector3(x, y, z);
     }
 
-    public void ChangeCoordinates(float latitude, float longitude)
+    public void ChangeCoordinates(double latitude, double longitude)
     {
         // Set initial position as (0, 0, 0)
         initialPoint = transform.position;

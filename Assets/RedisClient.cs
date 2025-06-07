@@ -115,8 +115,8 @@ public class RedisClient : MonoBehaviour
     private void UpdateDroneInformation(GameObject drone)
     {
         //update drone position with the updated data
-        float latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
-        float longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
+        double latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
+        double longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
         float altitudeDrone = drone.GetComponent<DroneController>().altitudeDrone;
 
         drone.GetComponent<AutomaticFlying>().getNewPositionLocation(latitudeDrone, longitudeDrone, altitudeDrone);
@@ -217,8 +217,8 @@ public class RedisClient : MonoBehaviour
     public void attributeInformationToDrone(GameObject drone)
     {
         //update information of the specific drone (new drone or selected drone)
-        float latitudeDrone = float.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
-        float longitudeDrone = float.Parse(longitude, System.Globalization.CultureInfo.InvariantCulture);
+        double latitudeDrone = double.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
+        double longitudeDrone = double.Parse(longitude, System.Globalization.CultureInfo.InvariantCulture);
         float altitudeDrone = float.Parse(altitude, System.Globalization.CultureInfo.InvariantCulture);
         float batteryDrone = float.Parse(battery, System.Globalization.CultureInfo.InvariantCulture);
         float zoomDrone = float.Parse(zoom, System.Globalization.CultureInfo.InvariantCulture);

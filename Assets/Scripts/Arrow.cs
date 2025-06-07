@@ -52,8 +52,8 @@ public class Arrow : MonoBehaviour
 
                 if (drone != null)
                 {
-                    float latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
-                    float longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
+                    double latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
+                    double longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
 
                     //Update distance value (if  drone camera view is not active)
                     if (!gameManager.isViewCameraActive)
@@ -149,7 +149,7 @@ public class Arrow : MonoBehaviour
         return brng;
     }
 
-    public void changeArrow(float latitudeDrone, float longitudeDrone)
+    public void changeArrow(double latitudeDrone, double longitudeDrone)
     {
         float bearing = angleFromCoordinate(currentLatitude, currentLongitude, latitudeDrone, longitudeDrone);
         Quaternion cameraRotation = Quaternion.Euler(0, camera.transform.rotation.eulerAngles.y, 0);

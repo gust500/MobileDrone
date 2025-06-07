@@ -20314,7 +20314,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoMock_get_latitude_m8E
 {
 	float V_0 = 0.0f;
 	{
-		// public float latitude { get { return (float)_location.LatitudeLongitude.x; } }
+		// public double latitude { get { return (float)_location.LatitudeLongitude.x; } }
 		Location_t093B2445FAF9DC767BF78DAF81CEA8909A80BCFF* L_0 = (&__this->____location_0);
 		Vector2d_t56C00F875E7B711F76931D3FD85D1D47957349FB* L_1 = (&L_0->___LatitudeLongitude_0);
 		double L_2 = L_1->___x_1;
@@ -20324,7 +20324,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoMock_get_latitude_m8E
 
 IL_0015:
 	{
-		// public float latitude { get { return (float)_location.LatitudeLongitude.x; } }
+		// public double latitude { get { return (float)_location.LatitudeLongitude.x; } }
 		float L_3 = V_0;
 		return L_3;
 	}
@@ -20343,7 +20343,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoMock_get_longitude_mF
 {
 	float V_0 = 0.0f;
 	{
-		// public float longitude { get { return (float)_location.LatitudeLongitude.y; } }
+		// public double longitude { get { return (float)_location.LatitudeLongitude.y; } }
 		Location_t093B2445FAF9DC767BF78DAF81CEA8909A80BCFF* L_0 = (&__this->____location_0);
 		Vector2d_t56C00F875E7B711F76931D3FD85D1D47957349FB* L_1 = (&L_0->___LatitudeLongitude_0);
 		double L_2 = L_1->___y_2;
@@ -20353,7 +20353,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoMock_get_longitude_mF
 
 IL_0015:
 	{
-		// public float longitude { get { return (float)_location.LatitudeLongitude.y; } }
+		// public double longitude { get { return (float)_location.LatitudeLongitude.y; } }
 		float L_3 = V_0;
 		return L_3;
 	}
@@ -20506,7 +20506,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoUnityWrapper_get_lati
 {
 	float V_0 = 0.0f;
 	{
-		// public float latitude { get { return _locationInfo.latitude; } }
+		// public double latitude { get { return _locationInfo.latitude; } }
 		LocationInfo_tBFD49220A54B71CDF564F61822F7B8D524465441* L_0 = (&__this->____locationInfo_0);
 		float L_1;
 		L_1 = LocationInfo_get_latitude_mAF0A46443555AF18EA3C516292CB92B1669CA863(L_0, NULL);
@@ -20516,7 +20516,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoUnityWrapper_get_lati
 
 IL_000f:
 	{
-		// public float latitude { get { return _locationInfo.latitude; } }
+		// public double latitude { get { return _locationInfo.latitude; } }
 		float L_2 = V_0;
 		return L_2;
 	}
@@ -20535,7 +20535,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoUnityWrapper_get_long
 {
 	float V_0 = 0.0f;
 	{
-		// public float longitude { get { return _locationInfo.longitude; } }
+		// public double longitude { get { return _locationInfo.longitude; } }
 		LocationInfo_tBFD49220A54B71CDF564F61822F7B8D524465441* L_0 = (&__this->____locationInfo_0);
 		float L_1;
 		L_1 = LocationInfo_get_longitude_mCB720DD0E139B7C614F78D40595E1BBF1F5433A2(L_0, NULL);
@@ -20545,7 +20545,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR float MapboxLocationInfoUnityWrapper_get_long
 
 IL_000f:
 	{
-		// public float longitude { get { return _locationInfo.longitude; } }
+		// public double longitude { get { return _locationInfo.longitude; } }
 		float L_2 = V_0;
 		return L_2;
 	}

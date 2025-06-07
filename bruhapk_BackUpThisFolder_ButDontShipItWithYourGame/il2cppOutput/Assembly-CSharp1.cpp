@@ -10878,7 +10878,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void WS_Client_SendControlInformationVARCAM_m
 		NullCheck(L_4);
 		String_t* L_5 = L_4->___droneName_18;
 		V_1 = L_5;
-		// float latitude = drone.GetComponent<DroneController>().latitudeDrone;
+		// double latitude = drone.GetComponent<DroneController>().latitudeDrone;
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_6 = ___0_drone;
 		NullCheck(L_6);
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_7;
@@ -10886,7 +10886,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void WS_Client_SendControlInformationVARCAM_m
 		NullCheck(L_7);
 		float L_8 = L_7->___latitudeDrone_12;
 		V_2 = L_8;
-		// float longitude = drone.GetComponent<DroneController>().longitudeDrone;
+		// double longitude = drone.GetComponent<DroneController>().longitudeDrone;
 		GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_9 = ___0_drone;
 		NullCheck(L_9);
 		DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_10;
@@ -11524,7 +11524,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void WS_Client_attributeInformationToDroneObj
 	bool V_5 = false;
 	ListVehicles_tA254BB9C6D950C313B8BCFD089764AC3B69CB245* V_6 = NULL;
 	{
-		// float latitudeDrone = float.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
+		// double latitudeDrone = float.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
 		String_t* L_0 = __this->___latitude_13;
 		il2cpp_codegen_runtime_class_init_inline(CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0_il2cpp_TypeInfo_var);
 		CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0* L_1;
@@ -11532,7 +11532,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void WS_Client_attributeInformationToDroneObj
 		float L_2;
 		L_2 = Single_Parse_mF40465AC387D690175D63EFFF44B0E810C090786(L_0, L_1, NULL);
 		V_0 = L_2;
-		// float longitudeDrone = float.Parse(longitude, System.Globalization.CultureInfo.InvariantCulture);
+		// double longitudeDrone = float.Parse(longitude, System.Globalization.CultureInfo.InvariantCulture);
 		String_t* L_3 = __this->___longitude_14;
 		CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0* L_4;
 		L_4 = CultureInfo_get_InvariantCulture_mD1E96DC845E34B10F78CB744B0CB5D7D63CEB1E6(NULL);
@@ -12008,7 +12008,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void WS_Client_attributeInformationToDroneObj
 		RedisClient_tF4C01EBF2F81DF1957D706746D836D2389FAA302* L_1;
 		L_1 = GameObject_GetComponent_TisRedisClient_tF4C01EBF2F81DF1957D706746D836D2389FAA302_mCE702C428E510A434318F4748E936D62822D7C7E(L_0, GameObject_GetComponent_TisRedisClient_tF4C01EBF2F81DF1957D706746D836D2389FAA302_mCE702C428E510A434318F4748E936D62822D7C7E_RuntimeMethod_var);
 		V_0 = L_1;
-		// float latitudeDrone = float.Parse(redis.latitude, System.Globalization.CultureInfo.InvariantCulture);
+		// double latitudeDrone = float.Parse(redis.latitude, System.Globalization.CultureInfo.InvariantCulture);
 		RedisClient_tF4C01EBF2F81DF1957D706746D836D2389FAA302* L_2 = V_0;
 		NullCheck(L_2);
 		String_t* L_3 = L_2->___latitude_10;
@@ -12018,7 +12018,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void WS_Client_attributeInformationToDroneObj
 		float L_5;
 		L_5 = Single_Parse_mF40465AC387D690175D63EFFF44B0E810C090786(L_3, L_4, NULL);
 		V_1 = L_5;
-		// float longitudeDrone = float.Parse(redis.longitude, System.Globalization.CultureInfo.InvariantCulture);
+		// double longitudeDrone = float.Parse(redis.longitude, System.Globalization.CultureInfo.InvariantCulture);
 		RedisClient_tF4C01EBF2F81DF1957D706746D836D2389FAA302* L_6 = V_0;
 		NullCheck(L_6);
 		String_t* L_7 = L_6->___longitude_11;
@@ -14007,7 +14007,7 @@ IL_001c_1:
 			String_t* L_11 = L_10->___droneName_18;
 			__this->___U3CnameU3E5__2_8 = L_11;
 			Il2CppCodeGenWriteBarrier((void**)(&__this->___U3CnameU3E5__2_8), (void*)L_11);
-			// float latitude = drone.GetComponent<DroneController>().latitudeDrone;
+			// double latitude = drone.GetComponent<DroneController>().latitudeDrone;
 			GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_12 = __this->___drone_2;
 			NullCheck(L_12);
 			DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_13;
@@ -14015,7 +14015,7 @@ IL_001c_1:
 			NullCheck(L_13);
 			float L_14 = L_13->___latitudeDrone_12;
 			__this->___U3ClatitudeU3E5__3_9 = L_14;
-			// float longitude = drone.GetComponent<DroneController>().longitudeDrone;
+			// double longitude = drone.GetComponent<DroneController>().longitudeDrone;
 			GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* L_15 = __this->___drone_2;
 			NullCheck(L_15);
 			DroneController_tD0BF86F140925EED3B59ABC4A3B921BFEEA0689E* L_16;

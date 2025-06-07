@@ -61,8 +61,8 @@ public class WS_Client : MonoBehaviour
     public class UserLocationData
     {
         public int userId;
-        public float latitudePerson;
-        public float longitudePerson;
+        public double latitudePerson;
+        public double longitudePerson;
     }
 
     private void OnApplicationQuit()
@@ -287,8 +287,8 @@ public class WS_Client : MonoBehaviour
     {
         string id = drone.GetComponent<DroneController>().droneID;
         string name = drone.GetComponent<DroneController>().droneName;
-        float latitude = drone.GetComponent<DroneController>().latitudeDrone;
-        float longitude = drone.GetComponent<DroneController>().longitudeDrone;
+        double latitude = drone.GetComponent<DroneController>().latitudeDrone;
+        double longitude = drone.GetComponent<DroneController>().longitudeDrone;
         float altitude = drone.GetComponent<DroneController>().altitudeDrone;
 
         //virtual drone (VARCAM)
@@ -317,8 +317,8 @@ public class WS_Client : MonoBehaviour
         {
             string id = drone.GetComponent<DroneController>().droneID;
             string name = drone.GetComponent<DroneController>().droneName;
-            float latitude = drone.GetComponent<DroneController>().latitudeDrone;
-            float longitude = drone.GetComponent<DroneController>().longitudeDrone;
+            double latitude = drone.GetComponent<DroneController>().latitudeDrone;
+            double longitude = drone.GetComponent<DroneController>().longitudeDrone;
             float altitude = drone.GetComponent<DroneController>().altitudeDrone;
 
             if (client.State == WebSocketState.Open)
@@ -488,8 +488,8 @@ public class WS_Client : MonoBehaviour
     public void attributeInformationToDroneObject(GameObject drone)
     {
         //update information of the specific drone (new drone or selected drone)
-        float latitudeDrone = float.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
-        float longitudeDrone = float.Parse(longitude, System.Globalization.CultureInfo.InvariantCulture);
+        double latitudeDrone = double.Parse(latitude, System.Globalization.CultureInfo.InvariantCulture);
+        double longitudeDrone = double.Parse(longitude, System.Globalization.CultureInfo.InvariantCulture);
         float altitudeDrone = float.Parse(altitude, System.Globalization.CultureInfo.InvariantCulture);
         float batteryDrone = float.Parse(battery, System.Globalization.CultureInfo.InvariantCulture);
         float zoomDrone = float.Parse(zoom, System.Globalization.CultureInfo.InvariantCulture);
@@ -585,8 +585,8 @@ public class WS_Client : MonoBehaviour
     {
         RedisClient redis = gameObject.GetComponent<RedisClient>();
         //update information of the specific drone (new drone or selected drone)
-        float latitudeDrone = float.Parse(redis.latitude, System.Globalization.CultureInfo.InvariantCulture);
-        float longitudeDrone = float.Parse(redis.longitude, System.Globalization.CultureInfo.InvariantCulture);
+        double latitudeDrone = double.Parse(redis.latitude, System.Globalization.CultureInfo.InvariantCulture);
+        double longitudeDrone = double.Parse(redis.longitude, System.Globalization.CultureInfo.InvariantCulture);
         float altitudeDrone = float.Parse(redis.altitude, System.Globalization.CultureInfo.InvariantCulture);
         float batteryDrone = float.Parse(redis.battery, System.Globalization.CultureInfo.InvariantCulture);
         float zoomDrone = float.Parse(redis.zoom, System.Globalization.CultureInfo.InvariantCulture);

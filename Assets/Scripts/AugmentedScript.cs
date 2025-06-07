@@ -7,8 +7,8 @@ public class AugmentedScript : MonoBehaviour
 {
     public float currentLatitude;
     public float currentLongitude;
-    public float latitudeDrone; //39.7545206f 39.7325029f
-    public float longitudeDrone; //-8.8016551f -8.820128f
+    public double latitudeDrone; //39.7545206f 39.7325029f
+    public double longitudeDrone; //-8.8016551f -8.820128f
     public double distance;
     public bool ready = false;
 
