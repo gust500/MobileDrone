@@ -1,162 +1,125 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using System.Linq;
 
+/// <summary>
+/// Arrow points toward a target drone based on GPS bearing and device compass.
+/// Any drone GameObject must have a component implementing IGpsProvider.
+/// </summary>
 public class Arrow : MonoBehaviour
 {
-    public RedisClient redisClientScript;
-    public AugmentedScript augmentedScript;
-    public GameManager gameManager;
-    public GameObject droneInfo;
-    private GameObject distanceTextObject;
-    public Quaternion north;
-    public float currentLatitude;
-    public float currentLongitude;
-    public float distanceDrone;
-    public bool firstTime;
-    public Camera camera;
-    private string sceneName;
-    private GameObject drone = null;
+    [Tooltip("Threshold (in meters) to consider a drone 'near'.")]
+    public float retrievalRadius = 15f;
 
-    // Start is called before the first frame update
+    [Tooltip("User's current latitude (set externally or via location service)")]
+    public float currentLatitude;
+
+    [Tooltip("User's current longitude (set externally or via location service)")]
+    public float currentLongitude;
+
+    [Tooltip("Reference to the GameManager that holds the selected drone")]
+    public GameManager gameManager;
+
+    private GameObject drone;
+
+    // ADD THIS PROPERTY:
+    public float distanceDrone { get; private set; }
+
     void Start()
     {
-        sceneName = SceneManager.GetActiveScene().name;
-
-        firstTime = true;
-        distanceTextObject = GameObject.FindGameObjectWithTag("distanceText");
-
-        distanceDrone = 99999;
-
+        // Enable device compass for heading information
+        Input.compass.enabled = true;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (augmentedScript != null && augmentedScript.ready)
+        // Fetch the currently selected drone from GameManager
+        drone = gameManager?.selectedDrone;
+        if (drone == null) return;
+
+        // Try to get any MonoBehaviour on the drone that implements IGpsProvider
+        var gpsProvider = drone.GetComponents<MonoBehaviour>().OfType<IGpsProvider>().FirstOrDefault();
+        if (gpsProvider == null)
         {
-            currentLatitude = Input.location.lastData.latitude;
-            currentLongitude = Input.location.lastData.longitude;
-
-            GameObject[] virtualDrones = GameObject.FindGameObjectsWithTag("virtualDrone");
-            GameObject[] realDrones = GameObject.FindGameObjectsWithTag("realDroneObject");
-
-            if (virtualDrones != null || realDrones != null)
-            {
-                //get the specific drone
-                drone = gameManager.selectedDrone;
-                distanceDrone = augmentedScript.Calc(currentLatitude, currentLongitude, drone.GetComponent<DroneController>().latitudeDrone, drone.GetComponent<DroneController>().longitudeDrone);         
-
-                if (drone != null)
-                {
-                    float latitudeDrone = drone.GetComponent<DroneController>().latitudeDrone;
-                    float longitudeDrone = drone.GetComponent<DroneController>().longitudeDrone;
-
-                    //Update distance value (if  drone camera view is not active)
-                    if (!gameManager.isViewCameraActive)
-                    {
-                        distanceTextObject.GetComponent<TextMeshProUGUI>().text = "Distance: " + distanceDrone.ToString("0.000") + "m";
-                    }
-
-                    //Update Arrow Direction
-                    changeArrow(latitudeDrone, longitudeDrone);
-
-                    //verify if drone is 15 meters or less from the user
-                    if (distanceDrone <= 15)
-                    {
-                        if (sceneName == "Visualization")
-                            transform.localScale = new Vector3(0, 0, 0);
-                        GameObject.Find("Canvas/DroneInfo/FarAwayText").GetComponent<TextMeshProUGUI>().text = "You are near from your drones";
-                    }
-                    else
-                    {
-                        if (sceneName == "Visualization")
-                            transform.localScale = new Vector3(100, 100, 100);
-                        GameObject.Find("Canvas/DroneInfo/FarAwayText").GetComponent<TextMeshProUGUI>().text = "You are far away from your drones";
-                    }
-                }             
-            }
-        }
-    }
-
-    public GameObject getselectedDrone()
-    {
-        //Verify which drone is closer
-        /*GameObject selectedDrone = null;
-        float currentLatitude = augmentedScript.currentLatitude;
-        float currentLongitude = augmentedScript.currentLongitude;
-        distanceDrone = 999999999999999;
-
-
-        //verify first virtual Drones
-        GameObject[] virtualDrones = GameObject.FindGameObjectsWithTag("virtualDrone");
-        if (virtualDrones != null)
-        {
-            foreach (GameObject drone in virtualDrones)
-            {
-                if (drone.GetComponent<DroneController>().name != null)
-                {
-                    float distance = augmentedScript.Calc(currentLatitude, currentLongitude, drone.GetComponent<DroneController>().latitudeDrone, drone.GetComponent<DroneController>().longitudeDrone);
-
-                    if (distanceDrone > distance)
-                    {
-                        distanceDrone = distance;
-                        selectedDrone = drone;
-                    }
-                }
-            }
+            Debug.LogWarning("Selected drone missing IGpsProvider component.");
+            return;
         }
 
-        //verify real drones
-        GameObject[] realDrones = GameObject.FindGameObjectsWithTag("realDroneObject");
-        if (realDrones != null)
-        {
-            foreach (GameObject drone in realDrones)
-            {
-                if (drone.GetComponent<DroneController>().droneID != null)
-                {
-                    float distance = augmentedScript.Calc(currentLatitude, currentLongitude, drone.GetComponent<DroneController>().latitudeDrone, drone.GetComponent<DroneController>().longitudeDrone);
+        // UPDATE THE DISTANCE every frame
+        distanceDrone = CalculateDistance(
+            currentLatitude, currentLongitude,
+            gpsProvider.latitude, gpsProvider.longitude
+        );
 
-                    if (distanceDrone > distance)
-                    {
-                        distanceDrone = distance;
-                        selectedDrone = drone;
-                    }
-                }
-            }
-        }*/
-        GameObject selectedDrone = gameManager.selectedDrone;
-        return selectedDrone;
+        // Rotate arrow toward the drone's GPS position
+        changeArrow(gpsProvider.latitude, gpsProvider.longitude);
     }
 
-    #region ArrowRotation
-    private float angleFromCoordinate(float lat1, float long1, float lat2, float long2)
+    /// <summary>
+    /// Rotates the arrow so it points from device-north to the bearing of the target.
+    /// </summary>
+    /// <param name="lat2">Target latitude</param>
+    /// <param name="lon2">Target longitude</param>
+    public void changeArrow(float lat2, float lon2)
     {
-        lat1 *= Mathf.Deg2Rad;
-        lat2 *= Mathf.Deg2Rad;
-        long1 *= Mathf.Deg2Rad;
-        long2 *= Mathf.Deg2Rad;
+        // 1) Compute the bearing from user to target (0 = north, clockwise)
+        float bearing = angleFromCoordinate(
+            currentLatitude, currentLongitude,
+            lat2, lon2
+        );
 
-        float dLon = (long2 - long1);
-        float y = Mathf.Sin(dLon) * Mathf.Cos(lat2);
-        float x = (Mathf.Cos(lat1) * Mathf.Sin(lat2)) - (Mathf.Sin(lat1) * Mathf.Cos(lat2) * Mathf.Cos(dLon));
-        float brng = Mathf.Atan2(y, x);
-        brng = Mathf.Rad2Deg * brng;
-        brng = (brng + 360) % 360;
-        return brng;
+        // 2) Read the device's compass true heading (0 = north, clockwise)
+        float heading = Input.compass.trueHeading;
+
+        // 3) Calculate the yaw offset from device-north to target bearing
+        float arrowYaw = bearing - heading;
+
+        // 4) Apply the rotation in world space (around Y axis)
+        transform.rotation = Quaternion.Euler(0f, arrowYaw, 0f);
     }
 
-    public void changeArrow(float latitudeDrone, float longitudeDrone)
+    /// <summary>
+    /// Calculates bearing (in degrees) between two lat/lon points.
+    /// </summary>
+    float angleFromCoordinate(float lat1, float lon1, float lat2, float lon2)
     {
-        float bearing = angleFromCoordinate(currentLatitude, currentLongitude, latitudeDrone, longitudeDrone);
-        Quaternion cameraRotation = Quaternion.Euler(0, camera.transform.rotation.eulerAngles.y, 0);
-        Quaternion compass = Quaternion.Euler(0, -Input.compass.magneticHeading, 0);
+        float dLon = (lon2 - lon1) * Mathf.Deg2Rad;
+        float lat1Rad = lat1 * Mathf.Deg2Rad;
+        float lat2Rad = lat2 * Mathf.Deg2Rad;
 
-        north = Quaternion.Euler(0, cameraRotation.eulerAngles.y + compass.eulerAngles.y + bearing, 0);
-        transform.rotation = north;  
+        float x = Mathf.Sin(dLon) * Mathf.Cos(lat2Rad);
+        float y = Mathf.Cos(lat1Rad) * Mathf.Sin(lat2Rad)
+                - Mathf.Sin(lat1Rad) * Mathf.Cos(lat2Rad) * Mathf.Cos(dLon);
+
+        float bearingRad = Mathf.Atan2(x, y);
+        float bearingDeg = (bearingRad * Mathf.Rad2Deg + 360f) % 360f;
+        return bearingDeg;
     }
-    #endregion
+
+    /// <summary>
+    /// Haversine formula to calculate distance between two lat/lon points in meters.
+    /// </summary>
+    float CalculateDistance(float lat1, float lon1, float lat2, float lon2)
+    {
+        float R = 6371000f; // Earth radius in meters
+        float dLat = (lat2 - lat1) * Mathf.Deg2Rad;
+        float dLon = (lon2 - lon1) * Mathf.Deg2Rad;
+
+        float a = Mathf.Sin(dLat / 2) * Mathf.Sin(dLat / 2) +
+                  Mathf.Cos(lat1 * Mathf.Deg2Rad) * Mathf.Cos(lat2 * Mathf.Deg2Rad) *
+                  Mathf.Sin(dLon / 2) * Mathf.Sin(dLon / 2);
+        float c = 2 * Mathf.Atan2(Mathf.Sqrt(a), Mathf.Sqrt(1 - a));
+        float distance = R * c;
+
+        return distance;
+    }
+}
+
+/// <summary>
+/// Interface for any component providing GPS coordinates.
+/// Attach to your drone prefabs and implement latitude/longitude.
+/// </summary>
+public interface IGpsProvider
+{
+    float latitude { get; }
+    float longitude { get; }
 }
