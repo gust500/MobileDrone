@@ -4,66 +4,50 @@ using UnityEngine;
 
 public class ObjectMovement : MonoBehaviour
 {
-    public Transform destinationPoint; // The transform of the destination point
-    public float speed = 1f; // Speed of object movement
+    // Set this to the GPS coordinates that correspond to Unity's (0,0,0)
+    public double originLatitude = 39.0000;
+    public double originLongitude = -8.0000;
+    public float unityMetersPerRealMeter = 1f; // scale, adjust if needed
 
-    private Vector3 initialPoint; // Initial position of the object
-    private Vector3 directionVector; // Direction vector towards the destination
-    private float distance; // Distance between initial and destination points
-    private float startTime; // Time when movement started
+    private Vector3 targetUnityPosition;
+    private Vector3 currentVelocity; // for smooth damp
+    public float moveSmoothTime = 0.5f; // seconds for smoothing
+
+    void Start()
+    {
+        targetUnityPosition = transform.position;
+    }
+
+    // Call this whenever a new GPS position is received from the UAV-FDG
+    public void UpdateTargetPosition(float latitude, float longitude, float altitude = 0f)
+    {
+        targetUnityPosition = GPSToUnityPosition(latitude, longitude, altitude);
+    }
 
     void Update()
     {
-        // Calculate elapsed time since movement started
-        float elapsedTime = Time.time - startTime;
-
-        // Calculate the displacement at current time step
-        Vector3 displacement = directionVector * (elapsedTime * speed);
-
-        // Update the position of the object
-        transform.position = initialPoint + displacement;
-
-        // Check if the object has reached the destination
-        if (elapsedTime >= distance / speed)
-        {
-            // Stop the movement
-            enabled = false;
-        }
+        // Smoothly move towards the target position
+        transform.position = Vector3.SmoothDamp(transform.position, targetUnityPosition, ref currentVelocity, moveSmoothTime);
     }
 
-    Vector3 LatLongToCartesian(float latitude, float longitude)
+    // Converts GPS to Unity world position using a flat projection (good enough for small areas)
+    Vector3 GPSToUnityPosition(double latitude, double longitude, float altitude)
     {
-        const float EarthRadius = 6371000f; // Radius of the Earth in meters
+        const double EarthRadius = 6378137.0; // meters (WGS-84)
+        double latRad = latitude * Mathf.Deg2Rad;
+        double lonRad = longitude * Mathf.Deg2Rad;
+        double originLatRad = originLatitude * Mathf.Deg2Rad;
+        double originLonRad = originLongitude * Mathf.Deg2Rad;
 
-        float radLatitude = Mathf.Deg2Rad * latitude;
-        float radLongitude = Mathf.Deg2Rad * longitude;
+        // Equirectangular approximation for small areas
+        double deltaLat = latRad - originLatRad;
+        double deltaLon = lonRad - originLonRad;
 
-        float x = EarthRadius * Mathf.Cos(radLatitude) * Mathf.Cos(radLongitude);
-        float y = EarthRadius * Mathf.Cos(radLatitude) * Mathf.Sin(radLongitude);
-        float z = EarthRadius * Mathf.Sin(radLatitude);
+        double x = EarthRadius * deltaLon * Mathf.Cos((float)originLatRad);
+        double z = EarthRadius * deltaLat;
+        float y = altitude; // altitude in meters
 
-        return new Vector3(x, y, z);
-    }
-
-    public void ChangeCoordinates(float latitude, float longitude)
-    {
-        // Set initial position as (0, 0, 0)
-        initialPoint = transform.position;
-
-        // Convert destination point latitude and longitude to Cartesian coordinates (x, y, z)
-        Vector3 destinationCoords = LatLongToCartesian(destinationPoint.position.x, destinationPoint.position.y);
-
-        // Determine displacement vector between initial and destination points
-        Vector3 displacementVector = destinationCoords - initialPoint;
-
-        // Normalize displacement vector to get direction vector
-        directionVector = displacementVector.normalized;
-
-        // Calculate distance between initial and destination points
-        distance = displacementVector.magnitude;
-
-        // Start the movement
-        startTime = Time.time;
+        // Apply scaling if needed
+        return new Vector3((float)x, y, (float)z) * unityMetersPerRealMeter;
     }
 }
-
