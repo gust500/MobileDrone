@@ -1,6 +1,8 @@
+using StackExchange.Redis;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -55,6 +57,7 @@ public class DroneController : MonoBehaviour
     private FixedJoystick joyStickDirection;
     private FixedJoystick joyStickUpDownandRotation;
     private WS_Client ws_client;
+    private RedisClient redis;
 
     private GameManager gameManager;
 
@@ -192,6 +195,9 @@ public class DroneController : MonoBehaviour
                     latitudeDrone = droneGPSPosition.x; //latitude
                     longitudeDrone = droneGPSPosition.y; //longitude
                     altitudeDrone = transform.position.y;
+                    //TODO CHANGE WITH REAL DATA FROM SERVER (Probably do a Drone class to send that object as json here idk)
+                    redis.PublishMessage("test", new object {});
+                    
                 }
                 else if (gameObject.tag == "realDroneObject")
                 {

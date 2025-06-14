@@ -50,7 +50,6 @@ public class RedisClient : MonoBehaviour
             //Visualization or Retrieval Scene
             parentDrone = GameObject.Find("Drones").transform;
             droneReady = false;
-
             if (redis.IsConnected)
             {
                 //Get Redis Data if redis is connected
@@ -233,6 +232,21 @@ public class RedisClient : MonoBehaviour
             latestDroneUpdated = drone;
         }
     }
+
+    public void PublishMessage(string channel, object messageData)
+    {
+        //TODO CHANGE WITH REAL DATA FROM SERVER
+        if (redis == null || !redis.IsConnected)
+        {
+            Debug.LogError("Redis connection not established");
+            return;
+        }
+
+        var db = redis.GetDatabase();
+        db.Publish(channel, JsonUtility.ToJson(messageData));
+        Debug.Log($"Sent to Node.js via Redis channel {channel}: {messageData}");
+    }
+
 
     //connect to Redis client
     static readonly ConnectionMultiplexer redis = ConnectionMultiplexer.Connect(

@@ -359,6 +359,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void RequestManualControl()
+    {
+        //TODO
+    }
+
     public void CameraView(bool cameraViewEnable)
     {
         GameObject[] virtualDrones = GameObject.FindGameObjectsWithTag("virtualDrone");
