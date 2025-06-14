@@ -20,50 +20,7 @@ public class AugmentedScript : MonoBehaviour
 
     IEnumerator GetCoordinates()
     {
-        //while true so this function keeps running once started.
 
-        // check if user has location service enabled
-        /* if (!Input.location.isEnabledByUser) yield break;
-
-         // Start service before querying location
-         Input.location.Start(1f, .1f);
-         Input.compass.enabled = true;
-         Input.gyro.enabled = true;
-
-
-         // Wait until service initializes
-         int maxWait = 20;
-         while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
-         {
-             maxWait--;
-             yield return new WaitForSeconds(1);
-         }
-
-         // Service didn't initialize in 20 seconds
-         if (maxWait < 1)
-         {
-             Debug.Log("Timed out");
-             yield break;
-         }
-
-         // Connection has failed
-         if (Input.location.status == LocationServiceStatus.Failed)
-         {
-             Debug.Log("Unable to determine device location");
-             yield break;
-         }
-
-         ready = true;
-
-         while (true)
-         {
-             //overwrite current lat and lon everytime
-             currentLatitude = Input.location.lastData.latitude;
-             currentLongitude = Input.location.lastData.longitude;
-
-         }
-             //Input.location.Stop();
-             */
         if (!Input.location.isEnabledByUser)
         {
             Debug.Log("Location services disabled by user");
@@ -105,7 +62,7 @@ public class AugmentedScript : MonoBehaviour
     {
         if (Input.location.status != LocationServiceStatus.Running) return;
 
-        
+
         float newLat = Input.location.lastData.latitude;
         float newLon = Input.location.lastData.longitude;
 
