@@ -546,11 +546,28 @@ public class GameManager : MonoBehaviour
         }
         if (selectDroneButton.GetComponentInChildren<TextMeshProUGUI>().text == "Add")
         {
-            string redisAddress = newWSurl.GetComponent<TMP_InputField>().text;
-
-            if (redisAddress != "" && redisAddress != null)
+            string urlWS = newWSurl.GetComponent<TMP_InputField>().text;
+            List<KeyValuePair<string, string>> keyValuePairs = new();
+            GameObject[] wsKeyValueList = GameObject.FindGameObjectsWithTag("WSKeyValue");
+            foreach(GameObject wsKeyValue in wsKeyValueList)
             {
-                this.GetComponent<RedisClient>().UpdateRedisConnection(redisAddress);
+                string key = wsKeyValue.transform.GetChild(1).gameObject.GetComponent<TMP_InputField>().text; //Key Input Text
+                string value = wsKeyValue.transform.GetChild(3).gameObject.GetComponent<TMP_InputField>().text; //Value Input Text
+                if (key != null && key != "" && value != null && value != "")
+                {
+                    keyValuePairs.Add(new KeyValuePair<string, string>(key, value));
+                }
+                Destroy(wsKeyValue); //clean keyvalue header input
+            }
+
+            foreach (KeyValuePair<string, string> kvp in keyValuePairs)
+            {
+                Debug.Log($"Key: {kvp.Key}, Value: {kvp.Value}");
+            }
+
+            if (urlWS != "" && urlWS != null)
+            {
+                this.GetComponent<WS_Client>().NewConnectionWS(urlWS, keyValuePairs);
                 newDroneView.SetActive(false);
             }
             else
