@@ -28,9 +28,9 @@ public class DroneController : MonoBehaviour
     private Vector3 originalAutoDronePosition;
     private Vector3 originalManualDronePosition;
     private Quaternion originalManualDroneRotation;
-    public float latitudeDrone; //39.7545206f 39.7325029f
-    public float longitudeDrone; //-8.8016551f -8.820128f
-    public float altitudeDrone; //5
+    public double latitudeDrone; //39.7545206f 39.7325029f
+    public double longitudeDrone; //-8.8016551f -8.820128f
+    public double altitudeDrone; //5
     public string droneColor; // #ff0000
     public float droneBattery;
     public string droneID;
